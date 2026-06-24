@@ -12,7 +12,9 @@ ENV NODE_ENV=production
 # This template uses pnpm. Enable it via corepack (bundled with Node).
 RUN corepack enable
 
-COPY package.json pnpm-lock.yaml ./
+# Include .npmrc so install honors shamefully-hoist (vite/react-router config
+# loaders resolve their deps from a flat node_modules) and auto-install-peers.
+COPY package.json pnpm-lock.yaml .npmrc ./
 
 # Install all deps (incl. dev) — the build step needs vite/react-router tooling.
 RUN pnpm install --frozen-lockfile
