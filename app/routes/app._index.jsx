@@ -41,6 +41,16 @@ export const loader = async ({ request }) => {
             id
             title
             description
+            inclusion {
+              selections(first: 50) {
+                nodes {
+                  product {
+                    id
+                    title
+                  }
+                }
+              }
+            }
           }
         }
       }`,
@@ -179,6 +189,11 @@ function SourceRow({ source, submit, busy }) {
   const remove = () =>
     submit({ intent: "delete", id: source.id }, { method: "post" });
 
+  // Products that make up this source's manual inclusion selections.
+  const products = (source.inclusion?.selections?.nodes ?? [])
+    .map((selection) => selection.product)
+    .filter(Boolean);
+
   return (
     <s-box
       padding="base"
@@ -189,9 +204,21 @@ function SourceRow({ source, submit, busy }) {
       <s-stack direction="block" gap="base">
         <s-text tone="subdued">{source.id}</s-text>
         <s-text-field ref={titleRef} label="Title" value={source.title} />
+        <s-stack direction="block" gap="base">
+          <s-text fontWeight="bold">Selections ({products.length})</s-text>
+          {products.length === 0 ? (
+            <s-text tone="subdued">No product selections.</s-text>
+          ) : (
+            <s-unordered-list>
+              {products.map((product) => (
+                <s-list-item key={product.id}>{product.title}</s-list-item>
+              ))}
+            </s-unordered-list>
+          )}
+        </s-stack>
         <s-stack direction="inline" gap="base">
           <s-button onClick={save} {...(busy ? { loading: true } : {})}>
-            Save title
+            Save
           </s-button>
           <s-button
             variant="primary"

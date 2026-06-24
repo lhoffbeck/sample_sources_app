@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "3e9646d6862991a8e0ec87c973b0fd7a"
-application_url = "https://example.com"
+application_url = "https://sample-collection-sources.onrender.com"
 embedded = true
 name = "sample_collection_sources"
 
@@ -45,8 +45,9 @@ api_version = "2026-07"
   topics = [ "app/scopes_update" ]
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [ "https://sample-collection-sources.onrender.com/auth/callback" ]
 
 [build]
-include_config_on_deploy = true
-automatically_update_urls_on_dev = true
+# Off so a local `shopify app dev` can't overwrite the Render application_url.
+# Flip back to true (or use a separate dev config) if you want to dev locally.
+automatically_update_urls_on_dev = false

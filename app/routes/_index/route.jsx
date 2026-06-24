@@ -18,9 +18,10 @@ export default function App() {
   return (
     <div className={styles.index}>
       <div className={styles.content}>
-        <h1 className={styles.heading}>A short heading about [your app]</h1>
+        <h1 className={styles.heading}>Shareable collection source test app</h1>
         <p className={styles.text}>
-          A tagline about [your app] that describes your value proposition.
+          A throwaway sample app for creating, listing, renaming, and deleting
+          collection conditions sources on a store.
         </p>
         {showForm && (
           <Form className={styles.form} method="post" action="/auth/login">
@@ -34,20 +35,6 @@ export default function App() {
             </button>
           </Form>
         )}
-        <ul className={styles.list}>
-          <li>
-            <strong>Product feature</strong>. Some detail about your feature and
-            its benefit to your customer.
-          </li>
-          <li>
-            <strong>Product feature</strong>. Some detail about your feature and
-            its benefit to your customer.
-          </li>
-          <li>
-            <strong>Product feature</strong>. Some detail about your feature and
-            its benefit to your customer.
-          </li>
-        </ul>
       </div>
     </div>
   );
