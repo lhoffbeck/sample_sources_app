@@ -1,0 +1,25 @@
+# Local Postgres for development, so `shopify app dev` has a DB to talk to
+# (the app now uses Postgres instead of the template's original SQLite).
+#
+#   docker compose up -d
+#
+# Then put this in your .env (Prisma + the app read DATABASE_URL):
+#   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/sample_collection_sources
+#
+# First time (or after schema changes): pnpm run setup   # prisma generate + migrate deploy
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sample_collection_sources
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
