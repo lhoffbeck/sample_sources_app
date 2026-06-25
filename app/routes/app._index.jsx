@@ -14,6 +14,7 @@ import { authenticate } from "../shopify.server";
 // inclusion selections.
 const PRODUCTS_PER_SOURCE = 5;
 const DEFAULT_SOURCE_TITLE = "Sample source";
+const DEFAULT_SOURCE_DESCRIPTION = "Created by the sample collection sources app";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -104,6 +105,7 @@ export const action = async ({ request }) => {
         variables: {
           input: {
             title: DEFAULT_SOURCE_TITLE,
+            description: DEFAULT_SOURCE_DESCRIPTION,
             inclusion: { selections },
           },
         },
@@ -123,6 +125,7 @@ export const action = async ({ request }) => {
   if (intent === "update") {
     const id = formData.get("id");
     const title = formData.get("title");
+    const description = formData.get("description");
 
     const response = await admin.graphql(
       `#graphql
@@ -133,6 +136,7 @@ export const action = async ({ request }) => {
             source {
               id
               title
+              description
             }
             userErrors {
               field
@@ -140,7 +144,7 @@ export const action = async ({ request }) => {
             }
           }
         }`,
-      { variables: { input: { id, title } } },
+      { variables: { input: { id, title, description } } },
     );
     const result = (await response.json()).data
       .collectionConditionsSourceUpdate;
@@ -179,10 +183,16 @@ export const action = async ({ request }) => {
 
 function SourceRow({ source, submit, busy }) {
   const titleRef = useRef(null);
+  const descriptionRef = useRef(null);
 
   const save = () =>
     submit(
-      { intent: "update", id: source.id, title: titleRef.current.value },
+      {
+        intent: "update",
+        id: source.id,
+        title: titleRef.current.value,
+        description: descriptionRef.current.value,
+      },
       { method: "post" },
     );
 
@@ -204,6 +214,11 @@ function SourceRow({ source, submit, busy }) {
       <s-stack direction="block" gap="base">
         <s-text tone="subdued">{source.id}</s-text>
         <s-text-field ref={titleRef} label="Title" value={source.title} />
+        <s-text-field
+          ref={descriptionRef}
+          label="Description"
+          value={source.description ?? ""}
+        />
         <s-stack direction="block" gap="base">
           <s-text fontWeight="bold">Selections ({products.length})</s-text>
           {products.length === 0 ? (
@@ -256,7 +271,7 @@ export default function Index() {
         `Source created with ${actionData.seededProductCount} products`,
       );
     } else if (actionData.intent === "update") {
-      shopify.toast.show("Title updated");
+      shopify.toast.show("Source updated");
     } else if (actionData.intent === "delete") {
       shopify.toast.show("Source deleted");
     }
